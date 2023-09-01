@@ -30,7 +30,7 @@ def main():
     parser.add_argument('-N', type=float, default=1, help="Number of Packets")
     parser.add_argument('-M', type=float, default=1, help="Packet Size (value in Mbits)")
     parser.add_argument('-S', type=float, default=1, help="Propagation Speed (speed in 10^8m/s)")
-    parser.add_argument('-p', type=float, default=1, help="Router Processing Time (processing time in milliseconds)")
+    parser.add_argument('-p', type=float, default=0, help="Router Processing Time (processing time in milliseconds)")
 
     args = parser.parse_args()
 
@@ -41,13 +41,17 @@ def main():
         B = R2 + queue_delay2 + args.p + (args.T3 if args.T3 else trans_delay(args.t3, args.M)) + (args.D3 if args.D3 else prop_delay(args.d3, args.S))
         
         
-        if R1 < trans_delay(args.t2, args.M):
-            queue_delay1 += trans_delay(args.t2, args.M) - trans_delay(args.t1, args.M)
-        if R2 < trans_delay(args.t3, args.M):
-            queue_delay2 += trans_delay(args.t3, args.M) - trans_delay(args.t2, args.M)
+        td_t1 = args.T1 if args.T1 else trans_delay(args.t1, args.M)
+        td_t2 = args.T2 if args.T2 else trans_delay(args.t2, args.M)
+        td_t3 = args.T3 if args.T3 else trans_delay(args.t3, args.M)
+
+        if R1 < td_t2:
+            queue_delay1 += td_t2 - td_t1
+        if R2 < td_t3:
+            queue_delay2 += td_t3 - td_t2
 
         print(f'{"P" + str(n):<10}{"":<5}{A:9.3f}{"":<20}{R1:9.3f}{"":<20}{R2:9.3f}{"":<20}{B:9.3f}')
-        n, A = n + 1, A + trans_delay(args.t1, args.M)
+        n, A = n + 1, A + td_t1
 
     print()
     print("-----------------------------------------------------------------------------------------------------------------")
