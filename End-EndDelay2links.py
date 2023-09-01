@@ -10,9 +10,10 @@ def prop_delay(d, S):
     return d / (S * 100)
 
 def main():
-    parser = argparse.ArgumentParser(description="Calculate network transmission and propagation delays.")
-    parser.add_argument('--t1', type=float, default=1, help="Transmission Rate at Link1 (value in Mbps)")
-    parser.add_argument('--t2', type=float, default=1, help="Transmission Rate at Link2 (value in Mbps)")
+    parser = argparse.ArgumentParser(description="Calculate network transmission and propagation delays.",
+                                     formatter_class=argparse.ArgumentDefaultsHelpFormatter)
+    parser.add_argument('--t1', type=float, default=1, help="Transmission Rate (link speed) at Link1 (value in Mbps)")
+    parser.add_argument('--t2', type=float, default=1, help="Transmission Rate (link speed) at Link2 (value in Mbps)")
     parser.add_argument('--T1', type=float, help="Transmission Delay at Link1 (value in milliseconds)")
     parser.add_argument('--T2', type=float, help="Transmission Delay at Link2 (value in milliseconds)")
     parser.add_argument('--d1', type=float, default=1, help="Distance of Link1 (value in KM)")
