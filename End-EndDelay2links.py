@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 import argparse
+from tabulate import tabulate
 
 # Transmission Delay
 def trans_delay(t, M):
@@ -26,6 +27,7 @@ def main():
     parser.add_argument('-p', type=float, default=0, help="Router Processing Time (processing time in milliseconds)")
 
     args = parser.parse_args()
+    data = []
 
     n, A, B, queue_delay = 1, 0, 0, 0
     while n <= args.N:
@@ -38,10 +40,18 @@ def main():
         if R < td_t2:
             queue_delay += td_t2 - td_t1
         
-        print(f'{"P" + str(n):<10}{"":<2}{A:9.3f} ms{"":<17}{R:9.3f} ms{"":<17}{B:9.3f} ms')
+        data.append(("P" + str(n), A, R, B))
+
+        # print(f'{"P" + str(n):<10}{"":<2}{A:9.3f} ms{"":<17}{R:9.3f} ms{"":<17}{B:9.3f} ms')
         n, A = n + 1, A + td_t1
 
     print(f"\nEnd to End transmission delay = {B:9.3f} ms\n")
+    print()
+    headers = ["Packet", "A (ms)", "R (ms)", "B (ms)"]
+    # cSpell:disable
+    print(tabulate(data, headers=headers, floatfmt=".3f"))
+    # cSpell:enable
+
 
 if __name__ == '__main__':
     main()

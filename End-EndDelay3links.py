@@ -63,7 +63,9 @@ def main():
     # print()
     # print("-----------------------------------------------------------------------------------------------------------------")
     headers = ["Packet", "A (ms)", "R1 (ms)", "R2 (ms)", "B (ms)"]
+    # cSpell:disable
     print(tabulate(data, headers=headers, floatfmt=".3f"))
+    # cSpell:enable
 
 
 if __name__ == '__main__':
