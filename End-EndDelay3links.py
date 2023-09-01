@@ -1,6 +1,9 @@
 #!/usr/bin/env python3
 
 import argparse
+from tabulate import tabulate
+
+
 
 # Transmission Delay
 def trans_delay(t, M):
@@ -11,10 +14,11 @@ def prop_delay(d, S):
     return d / (S * 100.0)
 
 def main():
-    parser = argparse.ArgumentParser(description="Calculate network transmission and propagation delays.")
-    parser.add_argument('--t1', type=float, default=1, help="Transmission Delay at Link1 (value in Mbps)")
-    parser.add_argument('--t2', type=float, default=1, help="Transmission Delay at Link2 (value in Mbps)")
-    parser.add_argument('--t3', type=float, default=1, help="Transmission Delay at Link3 (value in Mbps)")
+    parser = argparse.ArgumentParser(description="Calculate network transmission and propagation delays.", 
+                                     formatter_class=argparse.ArgumentDefaultsHelpFormatter)
+    parser.add_argument('--t1', type=float, default=1, help="Transmission Delay (link speed) at Link1 (value in Mbps)")
+    parser.add_argument('--t2', type=float, default=1, help="Transmission Delay (link speed) at Link2 (value in Mbps)")
+    parser.add_argument('--t3', type=float, default=1, help="Transmission Delay (link speed) at Link3 (value in Mbps)")
     
     parser.add_argument('--T1', type=float, help="Transmission Delay at Link1 (value in milliseconds)")
     parser.add_argument('--T2', type=float, help="Transmission Delay at Link2 (value in milliseconds)")
@@ -33,6 +37,7 @@ def main():
     parser.add_argument('-p', type=float, default=0, help="Router Processing Time (processing time in milliseconds)")
 
     args = parser.parse_args()
+    data = []
 
     n, A, queue_delay1, queue_delay2 = 1, 0, 0, 0
     while n <= args.N:
@@ -50,11 +55,16 @@ def main():
         if R2 < td_t3:
             queue_delay2 += td_t3 - td_t2
 
-        print(f'{"P" + str(n):<10}{"":<5}{A:9.3f}{"":<20}{R1:9.3f}{"":<20}{R2:9.3f}{"":<20}{B:9.3f}')
+        data.append(("P" + str(n), A, R1, R2, B))
+
+        # print(f'{"P" + str(n):<10}{"":<5}{A:9.3f}{"":<20}{R1:9.3f}{"":<20}{R2:9.3f}{"":<20}{B:9.3f}')
         n, A = n + 1, A + td_t1
 
-    print()
-    print("-----------------------------------------------------------------------------------------------------------------")
+    # print()
+    # print("-----------------------------------------------------------------------------------------------------------------")
+    headers = ["Packet", "A (ms)", "R1 (ms)", "R2 (ms)", "B (ms)"]
+    print(tabulate(data, headers=headers, floatfmt=".3f"))
+
 
 if __name__ == '__main__':
     main()
