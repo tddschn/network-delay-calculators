@@ -16,6 +16,10 @@ def main():
     parser.add_argument('--t2', type=float, default=1, help="Transmission Delay at Link2 (value in Mbps)")
     parser.add_argument('--t3', type=float, default=1, help="Transmission Delay at Link3 (value in Mbps)")
     
+    parser.add_argument('--T1', type=float, help="Transmission Delay at Link1 (value in milliseconds)")
+    parser.add_argument('--T2', type=float, help="Transmission Delay at Link2 (value in milliseconds)")
+    parser.add_argument('--T3', type=float, help="Transmission Delay at Link3 (value in milliseconds)")
+
     parser.add_argument('--d1', type=float, default=1, help="Distance of Link1 (value in KM)")
     parser.add_argument('--d2', type=float, default=1, help="Distance of Link2 (value in KM)")
     parser.add_argument('--d3', type=float, default=1, help="Distance of Link3 (value in KM)")
@@ -28,9 +32,10 @@ def main():
 
     n, A, queue_delay1, queue_delay2 = 1, 0, 0, 0
     while n <= args.N:
-        R1 = A + trans_delay(args.t1, args.M) + prop_delay(args.d1, args.S)
-        R2 = R1 + queue_delay1 + args.p + trans_delay(args.t2, args.M) + prop_delay(args.d2, args.S)
-        B = R2 + queue_delay2 + args.p + trans_delay(args.t3, args.M) + prop_delay(args.d3, args.S)
+        R1 = A + (args.T1 if args.T1 else trans_delay(args.t1, args.M)) + prop_delay(args.d1, args.S)
+        R2 = R1 + queue_delay1 + args.p + (args.T2 if args.T2 else trans_delay(args.t2, args.M)) + prop_delay(args.d2, args.S)
+        B = R2 + queue_delay2 + args.p + (args.T3 if args.T3 else trans_delay(args.t3, args.M)) + prop_delay(args.d3, args.S)
+
         
         if R1 < trans_delay(args.t2, args.M):
             queue_delay1 += trans_delay(args.t2, args.M) - trans_delay(args.t1, args.M)
