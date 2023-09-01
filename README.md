@@ -64,4 +64,4 @@ $ ./End-EndDelay3links.py --t1 10 --t2 1 --t3 1 --D1 10 --D2 90 --D3 100 -N 3 -M
 
 ## Note
 
-Please attribute the original authors if you use this code in your (home)work.
+Please attribute the original authors (Teddy Xinyuan Chen (@tddschn) and Ashish Jain (@ashxjain)) if you use this code in your (home)work.
