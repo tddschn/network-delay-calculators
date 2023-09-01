@@ -63,7 +63,7 @@ def main():
     args = get_args()
     delays = get_delays(args)
 
-    headers = ["Packet", "A (ms)", "R (ms)", "B (ms)", "Queue Delay(ms)"]
+    headers = ["Packet", "A (ms)", "R (ms)", "B (ms)", "Queue Delay (ms)"]
     print(tabulate(delays, headers=headers, tablefmt='pipe'))
 
 if __name__ == '__main__':
