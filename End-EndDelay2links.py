@@ -1,66 +1,39 @@
-#!/usr/bin/env python
-import os
-import getopt
-import sys
+#!/usr/bin/env python3
+import argparse
 
-#Transmission Delay
-def transDelay(t,M):
-	return (M/t)*10**3
+# Transmission Delay
+def trans_delay(t, M):
+    return (M / t) * 10**3
 
-#Propagation Delay
-def propDelay(d,S):
-	return d/(S*100)
+# Propagation Delay
+def prop_delay(d, S):
+    return d / (S * 100)
 
 def main():
-	t1,t2,d1,d2,N,M,S,p = 1,1,1,1,1,1,1,1 #Default
-	try:
-		opts, args = getopt.getopt(sys.argv[1:],'N:M:S:p:',['t1=','t2=','d1=','d2=','help'])
-		if len(opts) == 0 :
-			print """Please use the correct arguments, for usage type --help  """
-			sys.exit(2)
-	except getopt.GetoptError,err:
-        	print str(err)
-		print """Please use the correct arguments, for usage type --help """
-        	sys.exit(2)
-	for opt,arg in opts:
-		if opt == '--t1':
-			t1 = float(arg)
-		elif opt == '--t2':
-			t2 = float(arg)
-		elif opt == '--d1':
-			d1 = float(arg)
-		elif opt == '--d2':
-			d2 =float(arg)
-		elif opt == '-N':
-			N = float(arg)
-		elif opt == '-M':
-			M = float(arg)
-		elif opt == '-S':
-			S = float(arg)
-		elif opt == '-p':	
-			p = float(arg)
-		elif opt == '--help':
-			printHelp()
-		else:
-			assert False, "unhandled option"
-	print '\n%10s%5s%9s%20s%9s%20s%9s' % (""," ","+-------+"," "," ------- "," ","+-------+")
-	print '%10s%5s%9s%20s%9s%20s%9s' % ("Packet  "," ","|   A   |","-" * 20,"(   R   )","-" * 20,"|   B   |")
-	print '%10s%5s%9s%20s%9s%20s%9s' % ("-" * 10," ","+-------+"," "," ------- "," ","+-------+")
-	n,A,B,queueDelay= 1,0,0,0
-        while n<=N:
-                R = A + transDelay(t1,M) + propDelay(d1,S)
-		B = R + queueDelay + p + transDelay(t2,M) + propDelay(d2,S)
-                if R < transDelay(t2,M):
-                        queueDelay = queueDelay + transDelay(t2,M) - transDelay(t1,M)
-                print'%10s%2s%9.3f ms%17s%9.3f ms%17s%9.3f ms' % ('P' + `n` + '    ','',A,'',R,'',B)
-                n,A = n + 1,A + transDelay(t1,M)
-	print "\nEnd to End transmission delay = %9.3f ms\n" %(B)
-def printHelp():
-	print """We have multiple options:\n\t--t1: Transmission Delay at Link1 <value in Mbps>\n\
-	--t2: Transmission Delay at Link2 <value in Mbps>\n\t--d1: Distance of Link1<value in KM>\n\
-	--d2: Distance of Link2 <value in KM>\n\t  -N: Number of Packets <value>\n\t  -M: Packet Size <value in Mbits>\n\
-	  -S: Propagation Speed <speed in 10^8m/s>\n\t  -p: Router Processing Time <processing time in milliseconds>"""
-	sys.exit()
-		
-if __name__ =='__main__':
-	main()
+    parser = argparse.ArgumentParser(description="Calculate network transmission and propagation delays.")
+    parser.add_argument('--t1', type=float, default=1, help="Transmission Delay at Link1 (value in Mbps)")
+    parser.add_argument('--t2', type=float, default=1, help="Transmission Delay at Link2 (value in Mbps)")
+    parser.add_argument('--d1', type=float, default=1, help="Distance of Link1 (value in KM)")
+    parser.add_argument('--d2', type=float, default=1, help="Distance of Link2 (value in KM)")
+    parser.add_argument('-N', type=float, default=1, help="Number of Packets")
+    parser.add_argument('-M', type=float, default=1, help="Packet Size (value in Mbits)")
+    parser.add_argument('-S', type=float, default=1, help="Propagation Speed (speed in 10^8m/s)")
+    parser.add_argument('-p', type=float, default=1, help="Router Processing Time (processing time in milliseconds)")
+
+    args = parser.parse_args()
+
+    n, A, B, queue_delay = 1, 0, 0, 0
+    while n <= args.N:
+        R = A + trans_delay(args.t1, args.M) + prop_delay(args.d1, args.S)
+        B = R + queue_delay + args.p + trans_delay(args.t2, args.M) + prop_delay(args.d2, args.S)
+        
+        if R < trans_delay(args.t2, args.M):
+            queue_delay += trans_delay(args.t2, args.M) - trans_delay(args.t1, args.M)
+        
+        print(f'{"P" + str(n):<10}{"":<2}{A:9.3f} ms{"":<17}{R:9.3f} ms{"":<17}{B:9.3f} ms')
+        n, A = n + 1, A + trans_delay(args.t1, args.M)
+
+    print(f"\nEnd to End transmission delay = {B:9.3f} ms\n")
+
+if __name__ == '__main__':
+    main()
