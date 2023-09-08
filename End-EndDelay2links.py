@@ -49,10 +49,10 @@ def get_delays(args):
         R = A + td_t1 + (args.D1 if args.D1 else prop_delay(args.d1, args.S))
         B = R + queue_delay1 + args.p + td_t2 + (args.D2 if args.D2 else prop_delay(args.d2, args.S))
         
+        data.append(["P" + str(n), A, R, B, queue_delay1])
         if R < td_t2:
             queue_delay1 += td_t2 - td_t1
 
-        data.append(["P" + str(n), A, R, B, queue_delay1])
 
         n, A = n + 1, A + td_t1
 
